@@ -17,8 +17,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   administrator permission, and automatic acceptance of Winget terms.
 - Light and dark themes, saved between sessions.
 - Search, select-all, system items toggle and reliable mouse-wheel scrolling.
-- Per-user installer with desktop and Start Menu shortcuts, Apps & features entry and silent
-  uninstall, plus a portable single-file build.
+- A single downloadable file, `ReInstala.exe`: a per-user installer with the whole app embedded,
+  which creates a desktop shortcut and a Start Menu entry and registers itself in *Apps & features*
+  for a clean uninstall.
 - Multi-size application icon (16 to 256 px) embedded in both executables.
 - Command-line modes: `--backup`, `--selftest`, installer `--quiet` and `--uninstall`.
 - GitHub Actions workflows to build on every push and publish release assets on version tags.

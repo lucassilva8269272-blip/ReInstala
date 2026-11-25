@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build portable app
+      - name: Build app
         shell: powershell
         run: .\build.ps1
 
@@ -26,17 +26,13 @@ jobs:
         shell: powershell
         run: .\build-installer.ps1
 
-      - name: Show versions
+      - name: Show version
         shell: powershell
-        run: |
-          (Get-Item .\dist\ReInstala.exe).VersionInfo | Format-List ProductName, FileVersion
-          (Get-Item .\dist\ReInstala-Setup.exe).VersionInfo | Format-List ProductName, FileVersion
+        run: (Get-Item .\dist\ReInstala.exe).VersionInfo | Format-List ProductName, FileDescription, FileVersion
 
-      - name: Upload artifacts
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ReInstala-${{ github.sha }}
-          path: |
-            dist/ReInstala.exe
-            dist/ReInstala-Setup.exe
+          path: dist/ReInstala.exe
           if-no-files-found: error

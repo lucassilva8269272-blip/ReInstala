@@ -33,7 +33,8 @@ administrador** para o lote inteiro.
   termos/fonte do Winget automaticamente. Cada opção pode ser desligada.
 - **Tema claro e escuro**, salvos entre sessões.
 - **Busca, marcar tudo e itens de sistema**, com rolagem de roda do mouse confiável.
-- **Pequeno e sem dependências** — um único `.exe` para .NET Framework 4.8, que já vem no Windows.
+- **Pequeno e sem dependências** — o app inteiro é um único `.exe` para .NET Framework 4.8, que já
+  vem no Windows.
 
 <details>
 <summary>Mais capturas de tela</summary>
@@ -48,14 +49,16 @@ administrador** para o lote inteiro.
 
 ## Download
 
-Abra a [última versão](../../releases/latest) e escolha:
+Na [última versão](../../releases/latest) existe **um único arquivo**:
 
 | Arquivo | O que é |
 | --- | --- |
-| **ReInstala-Setup.exe** *(recomendado)* | Instala o ReInstala para o seu usuário, cria o **atalho na área de trabalho** e um atalho no menu Iniciar, e registra o app em *Aplicativos e recursos* para desinstalar normalmente. **Não pede permissão de administrador.** |
-| **ReInstala.exe** | Arquivo único portátil. Rode de qualquer pasta; nada é instalado. |
+| **ReInstala.exe** | Instalador único e autossuficiente: o aplicativo inteiro fica dentro dele. Instala o ReInstala para o seu usuário, cria o **atalho na área de trabalho** e um atalho no menu Iniciar, e registra o app em *Aplicativos e recursos* para desinstalar normalmente. **Não pede permissão de administrador.** |
 
-Os executáveis não têm assinatura digital, então o SmartScreen do Windows pode avisar na primeira
+Baixe, dê dois cliques e clique em **Instalar** — o ícone do ReInstala aparece na sua área de
+trabalho.
+
+O executável não tem assinatura digital, então o SmartScreen do Windows pode avisar na primeira
 execução. Clique em **Mais informações → Executar assim mesmo**. Todo o código-fonte está neste
 repositório e cada versão é compilada a partir dele pelo
 [fluxo de release](.github/workflows/release.yml).
@@ -82,7 +85,7 @@ repositório e cada versão é compilada a partir dele pelo
 
 ### Depois de formatar
 
-1. Instale o Windows e abra o instalador do ReInstala (ou o `.exe` portátil).
+1. Instale o Windows, execute o `ReInstala.exe` baixado e clique em **Instalar**.
 2. Abra a aba **Restaurar** e clique em **Trocar arquivo** — ou arraste o `.json` para a janela, ou
    dê duplo clique no arquivo com o ReInstala instalado.
 3. Revise a lista. Os programas já instalados aparecem como **Já instalado** e não são marcados.
@@ -127,25 +130,26 @@ Não é preciso Visual Studio, MSBuild nem SDK do .NET — só o Windows com .NE
 inclui o `csc.exe`.
 
 ```powershell
-# Compila o app portátil -> dist\ReInstala.exe
+# Compila o aplicativo -> dist\app\ReInstala.exe
 powershell -ExecutionPolicy Bypass -File .\build.ps1
 
-# Compila o instalador, que embute o app -> dist\ReInstala-Setup.exe
+# Compila o instalador único, que embute o app -> dist\ReInstala.exe
 powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 ```
 
 O número da versão fica em [`version.txt`](version.txt). O ícone é gerado por
 [`assets/make-icon.ps1`](assets/make-icon.ps1) (todos os tamanhos, de 16 a 256 px) e embutido nos
-dois executáveis. A saída fica em `dist/`, que não é versionada.
+dois executáveis. A saída fica em `dist/`, que não é versionada. `dist\ReInstala.exe` é o único
+arquivo a distribuir; ele contém o aplicativo dentro.
 
 ### Linha de comando
 
 | Comando | Descrição |
 | --- | --- |
-| `ReInstala.exe --backup [arquivo]` | Gera um backup sem abrir a janela. Útil em tarefas agendadas. |
-| `ReInstala.exe --selftest [arquivo]` | Gera um relatório de diagnóstico (detecção, leitura, ida e volta do backup). |
-| `ReInstala-Setup.exe --quiet` | Instalação silenciosa para o usuário, com atalhos na área de trabalho e no menu Iniciar. |
-| `ReInstala-Setup.exe --uninstall [--quiet]` | Remove o app instalado, os atalhos e a entrada do registro. |
+| `ReInstala.exe --quiet` | Instalação silenciosa para o usuário, com atalhos na área de trabalho e no menu Iniciar. |
+| `ReInstala.exe --uninstall [--quiet]` | Remove o app instalado, os atalhos e a entrada do registro. |
+| `%LOCALAPPDATA%\Programs\ReInstala\ReInstala.exe --backup [arquivo]` | Gera um backup sem abrir a janela. Útil em tarefas agendadas. |
+| `%LOCALAPPDATA%\Programs\ReInstala\ReInstala.exe --selftest [arquivo]` | Gera um relatório de diagnóstico (detecção, leitura, ida e volta do backup). |
 
 ## Estrutura do projeto
 
@@ -168,10 +172,10 @@ dois executáveis. A saída fica em `dist/`, que não é versionada.
 | `src/ListScrollBar.cs` | Barra de rolagem desenhada no tema |
 | `src/WheelRouter.cs` | Encaminha a roda do mouse para a lista mesmo sem foco nela |
 | `src/app.manifest` | DPI e nível de execução |
-| `installer/Setup.cs` | Instalador por usuário, atalhos e desinstalador |
+| `installer/Setup.cs` | Instalador por usuário, atalhos e desinstalador (vai dentro do `ReInstala.exe` único) |
 | `assets/` | Ícone (fonte e `.ico` gerado) |
 | `docs/` | Capturas de tela usadas nos READMEs |
-| `build.ps1` / `build-installer.ps1` | Scripts de compilação |
+| `build.ps1` / `build-installer.ps1` | Scripts de compilação: app e instalador único |
 
 ## Formato do backup
 

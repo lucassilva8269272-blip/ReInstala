@@ -4,6 +4,7 @@ $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $srcDir = Join-Path $root 'src'
 $assetsDir = Join-Path $root 'assets'
 $outDir = Join-Path $root 'dist'
+$appDir = Join-Path $outDir 'app'
 $objDir = Join-Path $root 'obj'
 
 $csc = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
@@ -27,6 +28,7 @@ if (-not (Test-Path $icon)) {
 }
 
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+New-Item -ItemType Directory -Force -Path $appDir | Out-Null
 New-Item -ItemType Directory -Force -Path $objDir | Out-Null
 
 $asmInfo = Join-Path $objDir 'AssemblyInfo.cs'
@@ -48,7 +50,7 @@ using System.Runtime.InteropServices;
 "@
 Set-Content -Path $asmInfo -Value $info -Encoding UTF8
 
-$exe = Join-Path $outDir 'ReInstala.exe'
+$exe = Join-Path $appDir 'ReInstala.exe'
 $sources = @(Get-ChildItem $srcDir -Filter *.cs | Sort-Object Name)
 $sources += Get-Item $asmInfo
 
@@ -85,4 +87,4 @@ if ($code -ne 0) {
 
 $size = [math]::Round((Get-Item $exe).Length / 1KB, 1)
 Write-Host ""
-Write-Host "Compilado com sucesso: $exe ($size KB, versao $version)" -ForegroundColor Green
+Write-Host "Aplicativo compilado: $exe ($size KB, versao $version)" -ForegroundColor Green

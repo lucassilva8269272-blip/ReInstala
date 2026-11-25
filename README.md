@@ -34,8 +34,8 @@ administrator prompt for the whole batch.
   off.
 - **Light and dark theme**, saved between sessions.
 - **Search, select-all and system items toggle**, plus reliable mouse-wheel scrolling.
-- **Small and dependency-free** — a single `.exe` built for .NET Framework 4.8, which ships with
-  Windows. No installer framework, no runtime to download.
+- **Small and dependency-free** — the whole app is a single `.exe` built for .NET Framework 4.8,
+  which ships with Windows. No installer framework, no runtime to download.
 
 <!-- Screenshots side by side look bad on narrow screens, so they stay stacked. -->
 <details>
@@ -51,14 +51,15 @@ administrator prompt for the whole batch.
 
 ## Download
 
-Go to the [latest release](../../releases/latest) and pick one:
+There is **one file** to download from the [latest release](../../releases/latest):
 
 | File | What it is |
 | --- | --- |
-| **ReInstala-Setup.exe** *(recommended)* | Installs ReInstala for your user, creates a **desktop shortcut** and a Start Menu entry, and registers it in *Apps & features* so you can uninstall it normally. **No administrator rights required.** |
-| **ReInstala.exe** | Portable single file. Run it from anywhere; nothing is installed. |
+| **ReInstala.exe** | A single self-contained installer with the whole app inside. It installs ReInstala for your user, creates a **desktop shortcut** and a Start Menu entry, and registers it in *Apps & features* so you can uninstall it normally. **No administrator rights required.** |
 
-The executables are not code-signed, so Windows SmartScreen may show a warning the first time.
+Download it, double-click it, click **Install** — the ReInstala icon appears on your desktop.
+
+The executable is not code-signed, so Windows SmartScreen may show a warning the first time.
 Click **More info → Run anyway**. The full source code is in this repository, and every release is
 built from it by the [release workflow](.github/workflows/release.yml).
 
@@ -88,7 +89,7 @@ built from it by the [release workflow](.github/workflows/release.yml).
 
 ### After formatting
 
-1. Install Windows, then open the ReInstala installer (or the portable `.exe`).
+1. Install Windows, then run the `ReInstala.exe` you downloaded and click **Install**.
 2. Open the **Restore** tab (`Restaurar`) and click **Change file** (`Trocar arquivo`) — or drag the
    `.json` onto the window, or double-click the file if ReInstala is installed.
 3. Review the list. Programs already installed are marked as **Already installed** and are not
@@ -134,25 +135,26 @@ No Visual Studio, MSBuild or .NET SDK is needed — just Windows with .NET Frame
 includes `csc.exe`.
 
 ```powershell
-# Build the portable app -> dist\ReInstala.exe
+# Build the app -> dist\app\ReInstala.exe
 powershell -ExecutionPolicy Bypass -File .\build.ps1
 
-# Build the installer, which embeds the app -> dist\ReInstala-Setup.exe
+# Build the single-file installer, which embeds the app -> dist\ReInstala.exe
 powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 ```
 
 The version number lives in [`version.txt`](version.txt). The icon is generated from
-[`assets/make-icon.ps1`](assets/make-icon.ps1) (all sizes, from 16 to 256 px) and embedded into both
-executables. Build output goes to `dist/`, which is not committed.
+[`assets/make-icon.ps1`](assets/make-icon.ps1) (all sizes, from 16 to 256 px) and embedded into
+both executables. Build output goes to `dist/`, which is not committed. `dist\ReInstala.exe` is the
+only file you distribute; it contains the app inside.
 
 ### Command line
 
 | Command | Description |
 | --- | --- |
-| `ReInstala.exe --backup [path]` | Creates a backup without opening the window. Useful for scheduled tasks. |
-| `ReInstala.exe --selftest [path]` | Runs a diagnostic report (detection, parsing, backup round-trip). |
-| `ReInstala-Setup.exe --quiet` | Silent per-user installation with desktop and Start Menu shortcuts. |
-| `ReInstala-Setup.exe --uninstall [--quiet]` | Removes the installed app, shortcuts and registry entry. |
+| `ReInstala.exe --quiet` | Silent per-user installation with desktop and Start Menu shortcuts. |
+| `ReInstala.exe --uninstall [--quiet]` | Removes the installed app, shortcuts and registry entry. |
+| `%LOCALAPPDATA%\Programs\ReInstala\ReInstala.exe --backup [path]` | Creates a backup without opening the window. Useful for scheduled tasks. |
+| `%LOCALAPPDATA%\Programs\ReInstala\ReInstala.exe --selftest [path]` | Runs a diagnostic report (detection, parsing, backup round-trip). |
 
 ## Project structure
 
@@ -175,10 +177,10 @@ executables. Build output goes to `dist/`, which is not committed.
 | `src/ListScrollBar.cs` | Themed scroll bar drawn over the native one |
 | `src/WheelRouter.cs` | Routes the mouse wheel to the list even when it is not focused |
 | `src/app.manifest` | DPI awareness and execution level |
-| `installer/Setup.cs` | Per-user installer, shortcuts and uninstaller |
+| `installer/Setup.cs` | Per-user installer, shortcuts and uninstaller (built into the single `ReInstala.exe`) |
 | `assets/` | Icon sources and generated `.ico` |
 | `docs/` | Screenshots used in this README |
-| `build.ps1` / `build-installer.ps1` | Build scripts |
+| `build.ps1` / `build-installer.ps1` | Build scripts: app and single-file installer |
 
 ## Backup format
 

@@ -28,7 +28,7 @@ jobs:
             throw "version.txt says $version but the tag is $tag."
           }
 
-      - name: Build portable app
+      - name: Build app
         shell: powershell
         run: .\build.ps1
 
@@ -36,28 +36,13 @@ jobs:
         shell: powershell
         run: .\build-installer.ps1
 
-      - name: Generate checksums
-        shell: powershell
-        run: |
-          $lines = @()
-          foreach ($file in @('ReInstala.exe', 'ReInstala-Setup.exe')) {
-            $hash = (Get-FileHash ".\dist\$file" -Algorithm SHA256).Hash
-            $lines += "$hash  $file"
-          }
-          Set-Content -Path .\dist\SHA256SUMS.txt -Value $lines -Encoding ASCII
-          Get-Content .\dist\SHA256SUMS.txt
-
       - name: Create or update GitHub release
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = "${{ github.ref_name }}"
-          $files = @(
-            '.\dist\ReInstala.exe',
-            '.\dist\ReInstala-Setup.exe',
-            '.\dist\SHA256SUMS.txt'
-          )
+          $files = @('.\dist\ReInstala.exe')
           gh release view $tag *> $null
           if ($LASTEXITCODE -eq 0) {
             gh release upload $tag @files --clobber

@@ -19,14 +19,15 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1
 powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 ```
 
-- `dist\ReInstala.exe` is the portable app.
-- `dist\ReInstala-Setup.exe` is the per-user installer (it embeds the app and the logo).
+- `dist\app\ReInstala.exe` is the app itself (used by the installer and for testing).
+- `dist\ReInstala.exe` is the single distributable file: the per-user installer with the app and
+  the logo embedded.
 - Build output (`dist/`, `obj/`) is ignored by Git.
 
 Run the diagnostic report before and after your change:
 
 ```powershell
-.\dist\ReInstala.exe --selftest
+.\dist\app\ReInstala.exe --selftest
 ```
 
 ## Code guidelines
@@ -45,7 +46,7 @@ Run the diagnostic report before and after your change:
 
 ## Testing checklist
 
-- `.\dist\ReInstala.exe --selftest` returns `RESULT=OK`.
+- `.\dist\app\ReInstala.exe --selftest` returns `RESULT=OK`.
 - Light and dark themes render correctly (switch the theme and reopen the app).
 - The list scrolls with the mouse wheel from any control, and the scroll bar stays in sync.
 - A backup is created in Downloads and can be restored in the same session.

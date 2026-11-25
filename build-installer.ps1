@@ -21,7 +21,7 @@ if (Test-Path (Join-Path $root 'version.txt')) {
 }
 if ([string]::IsNullOrWhiteSpace($version)) { $version = '1.0.0' }
 
-$appExe = Join-Path $outDir 'ReInstala.exe'
+$appExe = Join-Path $outDir 'app\ReInstala.exe'
 if (-not (Test-Path $appExe)) {
     & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root 'build.ps1')
 }
@@ -52,7 +52,7 @@ using System.Runtime.InteropServices;
 "@
 Set-Content -Path $asmInfo -Value $info -Encoding UTF8
 
-$setupExe = Join-Path $outDir 'ReInstala-Setup.exe'
+$setupExe = Join-Path $outDir 'ReInstala.exe'
 
 $lines = New-Object System.Collections.Generic.List[string]
 $lines.Add('/nologo')
@@ -88,4 +88,5 @@ if ($code -ne 0) {
 
 $size = [math]::Round((Get-Item $setupExe).Length / 1KB, 1)
 Write-Host ""
-Write-Host "Instalador gerado: $setupExe ($size KB, versao $version)" -ForegroundColor Green
+Write-Host "ReInstala.exe gerado: $setupExe ($size KB, versao $version)" -ForegroundColor Green
+Write-Host "Instalador com o aplicativo embutido: e este o unico arquivo a distribuir." -ForegroundColor DarkGray
