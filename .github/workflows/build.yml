@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build portable app
+        shell: powershell
+        run: .\build.ps1
+
+      - name: Build installer
+        shell: powershell
+        run: .\build-installer.ps1
+
+      - name: Show versions
+        shell: powershell
+        run: |
+          (Get-Item .\dist\ReInstala.exe).VersionInfo | Format-List ProductName, FileVersion
+          (Get-Item .\dist\ReInstala-Setup.exe).VersionInfo | Format-List ProductName, FileVersion
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReInstala-${{ github.sha }}
+          path: |
+            dist/ReInstala.exe
+            dist/ReInstala-Setup.exe
+          if-no-files-found: error

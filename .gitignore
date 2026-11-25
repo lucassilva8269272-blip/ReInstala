@@ -1,0 +1,16 @@
+# Build output
+dist/
+obj/
+
+# IDE
+.vs/
+*.user
+*.suo
+*.rsuser
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Logs and local files
+*.log
